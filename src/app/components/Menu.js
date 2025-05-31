@@ -2,7 +2,7 @@ import React from 'react'
 
 const Menu = () => {
   return (
-    <div className="my-10 mx-20 m">
+    <div className="my-10 mx-20 m" id="menu">
         <div>
             <div className="flex gap-20 px-10">
               <div className="border-2 border-amber-950 w-[300px] px-6 py-6 rounded-2xl">

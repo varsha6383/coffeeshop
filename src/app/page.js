@@ -1,103 +1,77 @@
-import Image from "next/image";
+"use client";
+import React, { useEffect, useRef, useState } from 'react';
+import CountUp from 'react-countup';
+import Menu from './components/Menu';
 
-export default function Home() {
+function Counter({ start, end, duration, label }) {
+  const counterRef = useRef(null);
+  const [animate, setAnimate] = useState(false);
+  const [key, setKey] = useState(0);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setAnimate(true);
+          setKey(prev => prev + 1);
+        } else {
+          setAnimate(false);
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    if (counterRef.current) {
+      observer.observe(counterRef.current);
+    }
+
+    return () => {
+      if (counterRef.current) {
+        observer.unobserve(counterRef.current);
+      }
+    };
+  }, []);
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+    <div ref={counterRef}>
+      <h1 className="text-2xl text-amber-950 font-bold">
+        {animate && <CountUp key={key} start={start} end={end} duration={duration} suffix="k+" />}
+      </h1>
+      <h1 className="text-md text-amber-950">{label}</h1>
     </div>
   );
 }
+
+function Page() {
+  return (
+    <div className="h-auto bg-amber-50 relative">
+      <div className="pt-16 w-full flex">
+        <div className="w-1/2 pl-10">
+          <img src="./assets/coffee.png" alt="" />
+          <div className="flex gap-6 pl-30">
+            <Counter start={1} end={50} duration={2} label="Reviews" />
+            <Counter start={1} end={13} duration={3} label="Best sell" />
+            <Counter start={10} end={250} duration={2} label="Menus" />
+          </div>
+        </div>
+        <div className="w-1/2 pt-30">
+          <h1 className="text-6xl pr-10 text-amber-800 font-serif">
+            <span className=" text-[70px]">E</span>njoying <span className=" text-[70px]">Y</span>our <span className=" text-[70px]">M</span>orning <span className=" text-[70px]">C</span>offee
+          </h1>
+          <p className="mt-6 text-lg text-amber-800">
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry...
+          </p>
+          <div>
+            <button className="mt-10 text-md font-bold hover:border-2 hover:border-amber-800 hover:bg-amber-50 hover:text-amber-800 px-6 py-2 rounded-3xl bg-amber-900 text-white">
+              click me
+            </button>
+          </div>
+        </div>
+      </div>
+       <img  className="w-3/4 opacity-30 absolute right-0 top-[230px]" src="./assets/thool.png" alt="" />
+      <Menu />
+    </div>
+  );
+}
+
+export default Page;
